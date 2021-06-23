@@ -64,7 +64,7 @@ class AnzyController extends ControllerBase {
       array_push($rows, $value);
     }
     return [
-      '#theme' => 'gbook_template',
+      '#theme' => 'Gbook_template',
       '#items' => $rows,
       '#form' => $form,
     ];

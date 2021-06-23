@@ -42,7 +42,22 @@ class GbookForm extends FormBase {
       '#required' => TRUE,
       '#ajax' => [
         'callback' => '::validateAjax',
-        'event' => 'input',
+        'event' => 'change',
+        'progress' => [
+          'type' => 'throbber',
+          'message' => t('Verifying name..'),
+        ],
+      ],
+    ];
+    $form['phone'] = [
+      '#title' => t("Your phone number:"),
+      '#type' => 'textfield',
+      '#size' => 15,
+      '#required' => TRUE,
+      '#description' => t("Your phone number should be standard format as for any country example +10990000000"),
+      '#ajax' => [
+        'callback' => '::validateAjax',
+        'event' => 'change',
         'progress' => [
           'type' => 'throbber',
           'message' => t('Verifying name..'),
@@ -56,7 +71,7 @@ class GbookForm extends FormBase {
       '#required' => TRUE,
       '#ajax' => [
         'callback' => '::validateAjax',
-        'event' => 'input',
+        'event' => 'change',
         'progress' => [
           'type' => 'throbber',
           'message' => t('Verifying email..'),
@@ -64,7 +79,17 @@ class GbookForm extends FormBase {
       ],
     ];
     $form['image'] = [
-      '#title' => t("Image:"),
+      '#title' => t("Review image:"),
+      '#type' => 'managed_file',
+      '#upload_location' => 'public://module-images',
+      '#upload_validators' => [
+        'file_validate_extensions' => ['png jpg jpeg'],
+        'file_validate_size' => [5297152],
+      ],
+      '#description' => t("insert image below size of 2MB. Supported formats: png jpg jpeg."),
+    ];
+    $form['avatar'] = [
+      '#title' => t("Your photo:"),
       '#type' => 'managed_file',
       '#upload_location' => 'public://module-images',
       '#upload_validators' => [
@@ -72,6 +97,10 @@ class GbookForm extends FormBase {
         'file_validate_size' => [2097152],
       ],
       '#description' => t("insert image below size of 2MB. Supported formats: png jpg jpeg."),
+    ];
+    $form['comment'] = [
+      '#title' => t("Your review:"),
+      '#type' => 'textarea',
       '#required' => TRUE,
     ];
     $form['submit'] = [
@@ -114,10 +143,16 @@ class GbookForm extends FormBase {
     $file = File::load($form_state->getValue('image')[0]);
     $file->setPermanent();
     $file->save();
+    $ava = File::load($form_state->getValue('avatar')[0]);
+    $ava->setPermanent();
+    $ava->save();
     $times = time() + 3 * 60 * 60;
     $result = $connection->insert('anzy')
       ->fields([
         'name' => $form_state->getValue('name'),
+        'comment' => $form_state->getValue('comment'),
+        'phone' => $form_state->getValue('phone'),
+        'avatar' => $form_state->getValue('avatar')[0],
         'mail' => $form_state->getValue('email'),
         'created' => date('d/m/Y G:i:s', $times),
         'image' => $form_state->getValue('image')[0],

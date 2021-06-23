@@ -62,14 +62,23 @@ class AnzyAdminForm extends FormBase {
     $rows = [];
     foreach ($info as &$value) {
       $fid = $value['image'];
+      $avafid = $value['avatar'];
       $id = $value['id'];
       $name = $value['name'];
+      $phone = $value['phone'];
+      $comment = $value['comment'];
       $mail = $value['mail'];
       $created = $value['created'];
       array_splice($value, 0, 5);
       $renderer = \Drupal::service('renderer');
       $file = File::load($fid);
       $img = [
+        '#type' => 'image',
+        '#theme' => 'image_style',
+        '#style_name' => 'thumbnail',
+        '#uri' => $file->getFileUri(),
+      ];
+      $ava = [
         '#type' => 'image',
         '#theme' => 'image_style',
         '#style_name' => 'thumbnail',

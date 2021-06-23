@@ -15,7 +15,7 @@
 
 function anzy_theme($existing, $type, $theme, $path) {
   return [
-    'gbook_template' => [
+    'Gbook_template' => [
       'variables' => ['form' => [], 'items' => [],],
     ],
   ];

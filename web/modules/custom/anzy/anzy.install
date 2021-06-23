@@ -19,8 +19,8 @@ function anzy_schema() {
       'comment' => [
         'description' => "User\'s comment.",
         'type' => 'text',
+        'length' => 864,
         'not null' => FALSE,
-        'default' => '',
       ],
       'phone' => [
         'description' => "User\'s phone number.",
