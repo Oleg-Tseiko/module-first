@@ -10,18 +10,18 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\file\Entity\File;
 
 /**
- * Contains \Drupal\anzy\Form\CatForm.
+ * Contains \Drupal\anzy\Form\gbookChangeForm.
  *
  * @file
  */
 
 /**
- * Provides an Cat form.
+ * Provides an gbook edit form.
  */
-class CatChangeForm extends FormBase {
+class GbookChangeForm extends FormBase {
 
   /**
-   * Contain slug id to edit cat entry.
+   * Contain slug id to edit review entry.
    *
    * @var ctid
    */
@@ -31,7 +31,7 @@ class CatChangeForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'cat_change_form';
+    return 'gbook_change_form';
   }
 
   /**
@@ -43,7 +43,7 @@ class CatChangeForm extends FormBase {
       '#weight' => -100,
     ];
     $form['name'] = [
-      '#title' => t("Your cat's name:"),
+      '#title' => t("Your name:"),
       '#type' => 'textfield',
       '#size' => 32,
       '#description' => t("Name should be at least 2 characters and less than 32 characters"),
@@ -84,7 +84,7 @@ class CatChangeForm extends FormBase {
     ];
     $form['submit'] = [
       '#type' => 'submit',
-      '#value' => t('Edit cat'),
+      '#value' => t('Edit review'),
       '#ajax' => [
         'callback' => '::ajaxForm',
         'event' => 'click',
@@ -162,7 +162,7 @@ class CatChangeForm extends FormBase {
    */
   public function ajaxForm(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
-    $response->addCommand(new RedirectCommand('/anzy/cats'));
+    $response->addCommand(new RedirectCommand('/anzy/gbook'));
     return $response;
   }
 

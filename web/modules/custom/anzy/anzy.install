@@ -1,43 +1,62 @@
 <?php
 function anzy_schema() {
-  $schema['anzy'] = array(
-    'description' => 'stores email, name and uid for cats',
-    'fields' => array(
-      'id' => array(
-        'description' => 'The primary identifier for the cat.',
+  $schema['anzy'] = [
+    'description' => 'stores email, name, image, avatar and phone for comment',
+    'fields' => [
+      'id' => [
+        'description' => 'The primary identifier for db entry.',
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-      ),
-      'name' => array(
-        'description' => "User\'s cat name.",
+      ],
+      'name' => [
+        'description' => "User\'s name.",
         'type' => 'varchar',
         'length' => 64,
         'not null' => FALSE,
         'default' => '',
-      ),
-      'mail' => array(
+      ],
+      'comment' => [
+        'description' => "User\'s comment.",
+        'type' => 'text',
+        'not null' => FALSE,
+        'default' => '',
+      ],
+      'phone' => [
+        'description' => "User\'s phone number.",
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
+        'default' => '',
+      ],
+      'mail' => [
         'description' => "User\'s email address.",
         'type' => 'varchar',
         'length' => 64,
         'not null' => FALSE,
         'default' => '',
-      ),
-      'image' => array(
-        'description' => "User\'s cat picture.",
+      ],
+      'image' => [
+        'description' => "User\'s comment image.",
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'created' => array(
-        'description' => 'Timestamp when cat was submitted.',
+      ],
+      'avatar' => [
+        'description' => "User\'s profile picture.",
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'created' => [
+        'description' => 'Timestamp when review was submitted.',
         'type' => 'varchar',
         'length' => 64,
         'not null' => FALSE,
         'default' => '',
-      ),
-    ),
-    'primary key' => array('id'),
-  );
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
   return $schema;
 }

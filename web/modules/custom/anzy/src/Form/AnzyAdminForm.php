@@ -8,13 +8,13 @@ use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 
 /**
- * Contains \Drupal\anzy\Form\CatAdminForm.
+ * Contains \Drupal\anzy\Form\GbookAdminForm.
  *
  * @file
  */
 
 /**
- * Provides an Cat form.
+ * Provides an Gbook form.
  */
 class AnzyAdminForm extends FormBase {
 
@@ -22,11 +22,11 @@ class AnzyAdminForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'cat_admin_form';
+    return 'gbook_admin_form';
   }
 
   /**
-   * Get all cats for page.
+   * Get all reviews for page.
    *
    * @return array
    *   A simple array.
@@ -34,7 +34,7 @@ class AnzyAdminForm extends FormBase {
   public function load() {
     $connection = \Drupal::service('database');
     $query = $connection->select('anzy', 'a');
-    $query->fields('a', ['name', 'mail', 'created', 'image', 'id']);
+    $query->fields('a', ['name', 'comment', 'phone', 'mail', 'created', 'image', 'avatar', 'id']);
     $result = $query->execute()->fetchAll();
     return $result;
   }
@@ -46,10 +46,13 @@ class AnzyAdminForm extends FormBase {
     $info = json_decode(json_encode($this->load()), TRUE);
     $info = array_reverse($info);
     $content['message'] = [
-      '#markup' => $this->t('Below is a list of all cats including username, email, image and submission date.'),
+      '#markup' => $this->t('Below is a list of all reviews including username, email, image, avatar, phone number, comment and submission date.'),
     ];
     $headers = [
-      t('Cat name'),
+      t('Guest name'),
+      t('Phone'),
+      t('Avatar'),
+      t('Comment'),
       t('Email'),
       t('Submitted'),
       t('Photo'),
@@ -78,7 +81,7 @@ class AnzyAdminForm extends FormBase {
       $value[3] = $renderer->render($img);
       $delete = [
         '#type' => 'link',
-        '#url' => Url::fromUserInput("/anzy/catsDel/$id"),
+        '#url' => Url::fromUserInput("/anzy/gbookDel/$id"),
         '#title' => $this->t('Delete'),
         '#attributes' => [
           'data-dialog-type' => ['modal'],
@@ -88,7 +91,7 @@ class AnzyAdminForm extends FormBase {
       $value[4] = $renderer->render($delete);
       $edit = [
         '#type' => 'link',
-        '#url' => Url::fromUserInput("/admin/anzy/catsChange/$id"),
+        '#url' => Url::fromUserInput("/admin/anzy/gbookChange/$id"),
         '#title' => $this->t('Edit'),
         '#attributes' => ['class' => ['button']],
       ];

@@ -9,21 +9,21 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\file\Entity\File;
 
 /**
- * Contains \Drupal\anzy\Form\CatForm.
+ * Contains \Drupal\anzy\Form\gbookForm.
  *
  * @file
  */
 
 /**
- * Provides an Cat form.
+ * Provides an gbook form.
  */
-class CatForm extends FormBase {
+class GbookForm extends FormBase {
 
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'cat_form';
+    return 'Gbook_form';
   }
 
   /**
@@ -35,7 +35,7 @@ class CatForm extends FormBase {
       '#weight' => -100,
     ];
     $form['name'] = [
-      '#title' => t("Your cat's name:"),
+      '#title' => t("Your name:"),
       '#type' => 'textfield',
       '#size' => 32,
       '#description' => t("Name should be at least 2 characters and less than 32 characters"),
@@ -76,7 +76,7 @@ class CatForm extends FormBase {
     ];
     $form['submit'] = [
       '#type' => 'submit',
-      '#value' => t('Add cat'),
+      '#value' => t('Add review'),
       '#ajax' => [
         'callback' => '::ajaxForm',
         'event' => 'click',

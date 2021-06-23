@@ -8,17 +8,17 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 
 /**
- * Contains \Drupal\anzy\Form\CatDeleteForm.
+ * Contains \Drupal\anzy\Form\gbookDeleteForm.
  *
  * @file
  */
 
 /**
- * Provides an Cat form.
+ * Provides an gbook delete form.
  */
-class CatDeleteForm extends FormBase {
+class GbookDeleteForm extends FormBase {
   /**
-   * Contain slug id to delete cat entry.
+   * Contain slug id to delete review entry.
    *
    * @var ctid
    */
@@ -28,7 +28,7 @@ class CatDeleteForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'cat_delete_form';
+    return 'gbook_delete_form';
   }
 
   /**
@@ -66,7 +66,7 @@ class CatDeleteForm extends FormBase {
    */
   public function ajaxForm(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
-    $response->addCommand(new RedirectCommand('/anzy/cats'));
+    $response->addCommand(new RedirectCommand('/anzy/gbook'));
     return $response;
   }
 

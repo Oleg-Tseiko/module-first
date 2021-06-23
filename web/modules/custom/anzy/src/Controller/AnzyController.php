@@ -28,15 +28,15 @@ class AnzyController extends ControllerBase {
   }
 
   /**
-   * Return form for cats.
+   * Return form for review.
    */
   public function form() {
-    $form = $this->formBuilder->getForm('\Drupal\anzy\Form\CatForm');
+    $form = $this->formBuilder->getForm('\Drupal\anzy\Form\GbookForm');
     return $form;
   }
 
   /**
-   * Get all cats for page.
+   * Get all reviews for page.
    *
    * @return array
    *   A simple array.
@@ -44,13 +44,13 @@ class AnzyController extends ControllerBase {
   public function load() {
     $connection = \Drupal::service('database');
     $query = $connection->select('anzy', 'a');
-    $query->fields('a', ['name', 'mail', 'created', 'image', 'id']);
+    $query->fields('a', ['name', 'comment', 'phone', 'mail', 'created', 'image', 'avatar', 'id']);
     $result = $query->execute()->fetchAll();
     return $result;
   }
 
   /**
-   * Render all cat entries.
+   * Render all reviews entries.
    */
   public function report() {
     $info = json_decode(json_encode($this->load()), TRUE);
@@ -64,7 +64,7 @@ class AnzyController extends ControllerBase {
       array_push($rows, $value);
     }
     return [
-      '#theme' => 'cat_template',
+      '#theme' => 'gbook_template',
       '#items' => $rows,
       '#form' => $form,
     ];
