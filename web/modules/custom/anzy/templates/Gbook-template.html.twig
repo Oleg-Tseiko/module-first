@@ -4,12 +4,17 @@
 {% for item in items %}
   <div class="row underline_gbook">
     <div class="col-md-6">
-      <a href="{{ item.avatar }}" target="_blank"><img src="{{ item.avatar }}" alt="user profile image"></a>
-      <p><span>{{ 'Name:'|trans }} </span>{{ item.name }}</p>
-      <p><span>{{ 'Email:'|trans }} </span>{{ item.mail }}</p>
-      <p><span>{{ 'Phone:'|trans }} </span>{{ item.phone }}</p>
-      <p><span>{{ 'Review:'|trans }} </span>{{ item.comment }}</p>
+      <div class="row">
+        <div class="col-sm-6">
+          <a href="{{ item.avatar }}" target="_blank"><img src="{{ item.avatar }}" alt="user profile image"></a></div>
+        <div class="col-sm-6">
+          <p>{{ item.name }}</p>
+          <p>{{ item.mail }}</p>
+          <p>{{ item.phone }}</p>
+        </div>
+      </div>
       <p><span>{{ 'Submitted:'|trans }} </span>{{ item.created }}</p>
+      <p><span>{{ 'Review:'|trans }} </span>{{ item.comment }}</p>
       {% if user.hasPermission('administer nodes') %}
         <a href="/anzy/gbookDel/{{ item.id }}" class="deleteGbook use-ajax" data-dialog-type="modal">{{ 'Delete'|trans }}</a>
         <a href="/admin/anzy/gbookChange/{{ item.id }}" class="deleteGbook">{{ 'Edit'|trans }}</a>

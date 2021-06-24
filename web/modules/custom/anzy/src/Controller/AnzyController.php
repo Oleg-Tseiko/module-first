@@ -61,6 +61,9 @@ class AnzyController extends ControllerBase {
       $fid = $value['image'];
       $file = File::load($fid);
       $value['image'] = file_url_transform_relative(file_create_url($file->getFileUri()));
+      $avafid = $value['avatar'];
+      $avafile = File::load($avafid);
+      $value['avatar'] = file_url_transform_relative(file_create_url($avafile->getFileUri()));
       array_push($rows, $value);
     }
     return [

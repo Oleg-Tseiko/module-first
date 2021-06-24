@@ -26,7 +26,7 @@ class AnzyAdminForm extends FormBase {
   }
 
   /**
-   * Get all reviews for page.
+   * Get all reviews fields for page.
    *
    * @return array
    *   A simple array.
@@ -40,11 +40,18 @@ class AnzyAdminForm extends FormBase {
   }
 
   /**
+   * Building tableselect form for deletion functionality.
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    /*
+     * Decoding and reversing(sort descending) stdClass to access it values and show newest first.
+     */
     $info = json_decode(json_encode($this->load()), TRUE);
     $info = array_reverse($info);
+    /*
+     * Form markup for tableselect and creating proper render array rows for tableselect.
+     */
     $content['message'] = [
       '#markup' => $this->t('Below is a list of all reviews including username, email, image, avatar, phone number, comment and submission date.'),
     ];
@@ -61,17 +68,16 @@ class AnzyAdminForm extends FormBase {
     ];
     $rows = [];
     foreach ($info as &$value) {
+      $renderer = \Drupal::service('renderer');
+      $newVal = [];
+      /*
+       * Store fid, load images and render it images manualy to render it in tableselect.
+       */
       $fid = $value['image'];
       $avafid = $value['avatar'];
-      $id = $value['id'];
-      $name = $value['name'];
-      $phone = $value['phone'];
-      $comment = $value['comment'];
-      $mail = $value['mail'];
-      $created = $value['created'];
-      array_splice($value, 0, 5);
-      $renderer = \Drupal::service('renderer');
       $file = File::load($fid);
+      $avafile = File::load($avafid);
+      $id = $value['id'];
       $img = [
         '#type' => 'image',
         '#theme' => 'image_style',
@@ -82,12 +88,11 @@ class AnzyAdminForm extends FormBase {
         '#type' => 'image',
         '#theme' => 'image_style',
         '#style_name' => 'thumbnail',
-        '#uri' => $file->getFileUri(),
+        '#uri' => $avafile->getFileUri(),
       ];
-      $value[0] = $name;
-      $value[1] = $mail;
-      $value[2] = $created;
-      $value[3] = $renderer->render($img);
+      /*
+       * Setting deletion and edit button property and render them manually so they could appear in tableselect.
+       */
       $delete = [
         '#type' => 'link',
         '#url' => Url::fromUserInput("/anzy/gbookDel/$id"),
@@ -97,20 +102,33 @@ class AnzyAdminForm extends FormBase {
           'class' => ['button', 'use-ajax'],
         ],
       ];
-      $value[4] = $renderer->render($delete);
       $edit = [
         '#type' => 'link',
         '#url' => Url::fromUserInput("/admin/anzy/gbookChange/$id"),
         '#title' => $this->t('Edit'),
         '#attributes' => ['class' => ['button']],
       ];
-      $value[5] = $renderer->render($edit);
+      /*
+       * Hidden field used to give id so it could be used to delete db entry.
+       */
       $newId = [
         '#type' => 'hidden',
         '#value' => $id,
       ];
-      $value[6] = $newId;
-      array_push($rows, $value);
+      /*
+       * Pushing all values to new array so it could be rendered properly by tableselect.
+       */
+      $newVal[0] = $value['name'];
+      $newVal[2] = $renderer->render($ava);
+      $newVal[1] = $value['phone'];
+      $newVal[3] = $value['comment'];
+      $newVal[4] = $value['mail'];
+      $newVal[5] = $value['created'];
+      $newVal[6] = $renderer->render($img);
+      $newVal[7] = $renderer->render($delete);
+      $newVal[8] = $renderer->render($edit);
+      $newVal[9] = $newId;
+      array_push($rows, $newVal);
     }
     $form['table'] = [
       '#type' => 'tableselect',
@@ -132,12 +150,15 @@ class AnzyAdminForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $value = $form['table']['#value'];
     $connection = \Drupal::service('database');
+    /*
+     * Cycle through all selected checkboxes to delete db entry for each one of them.
+     */
     foreach ($value as $key => $val) {
       $result = $connection->delete('anzy');
-      $result->condition('id', $form['table']['#options'][$key][6]["#value"]);
+      $result->condition('id', $form['table']['#options'][$key][9]["#value"]);
       $result->execute();
     }
-    \Drupal::messenger()->addMessage($this->t('Form Submitted Successfully'), 'status', TRUE);
+    \Drupal::messenger()->addMessage($this->t('Comments deleted Successfully'), 'status', TRUE);
   }
 
 }
