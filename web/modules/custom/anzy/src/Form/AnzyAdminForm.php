@@ -34,23 +34,28 @@ class AnzyAdminForm extends FormBase {
   public function load() {
     $connection = \Drupal::service('database');
     $query = $connection->select('anzy', 'a');
-    $query->fields('a', ['name', 'comment', 'phone', 'mail', 'created', 'image', 'avatar', 'id']);
+    $query->fields('a',
+      ['name', 'comment', 'phone', 'mail', 'created', 'image', 'avatar', 'id']
+    );
     $result = $query->execute()->fetchAll();
     return $result;
   }
 
   /**
    * Building tableselect form for deletion functionality.
+   *
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     /*
-     * Decoding and reversing(sort descending) stdClass to access it values and show newest first.
+     * Decoding and reversing(sort descending) stdClass,
+     * To access it values and show newest first.
      */
     $info = json_decode(json_encode($this->load()), TRUE);
     $info = array_reverse($info);
     /*
-     * Form markup for tableselect and creating proper render array rows for tableselect.
+     * Form markup for tableselect,
+     * creating proper render array rows for tableselect.
      */
     $content['message'] = [
       '#markup' => $this->t('Below is a list of all reviews including username, email, image, avatar, phone number, comment and submission date.'),
@@ -71,7 +76,8 @@ class AnzyAdminForm extends FormBase {
       $renderer = \Drupal::service('renderer');
       $newVal = [];
       /*
-       * Store fid, load images and render it images manualy to render it in tableselect.
+       * Store fid, load images and render it images manualy,
+       * to render it in tableselect.
        */
       $fid = $value['image'];
       $avafid = $value['avatar'];
@@ -82,7 +88,7 @@ class AnzyAdminForm extends FormBase {
         '#type' => 'image',
         '#theme' => 'image_style',
         '#style_name' => 'thumbnail',
-        '#uri' => $file->getFileUri(),
+        '#uri' => !empty($file) ? $file->getFileUri() : '',
       ];
       $ava = [
         '#type' => 'image',
@@ -91,11 +97,12 @@ class AnzyAdminForm extends FormBase {
         '#uri' => $avafile->getFileUri(),
       ];
       /*
-       * Setting deletion and edit button property and render them manually so they could appear in tableselect.
+       * Setting deletion and edit button property,
+       * render them manually so they could appear in tableselect.
        */
       $delete = [
         '#type' => 'link',
-        '#url' => Url::fromUserInput("/anzy/gbookDel/$id"),
+        '#url' => Url::fromUserInput("/admin/anzy/gbookDel/$id"),
         '#title' => $this->t('Delete'),
         '#attributes' => [
           'data-dialog-type' => ['modal'],
@@ -116,7 +123,8 @@ class AnzyAdminForm extends FormBase {
         '#value' => $id,
       ];
       /*
-       * Pushing all values to new array so it could be rendered properly by tableselect.
+       * Pushing all values to new array,
+       * so it could be rendered properly by tableselect.
        */
       $newVal[0] = $value['name'];
       $newVal[2] = $renderer->render($ava);
@@ -151,7 +159,8 @@ class AnzyAdminForm extends FormBase {
     $value = $form['table']['#value'];
     $connection = \Drupal::service('database');
     /*
-     * Cycle through all selected checkboxes to delete db entry for each one of them.
+     * Cycle through all selected checkboxes,
+     * to delete db entry for each one of them.
      */
     foreach ($value as $key => $val) {
       $result = $connection->delete('anzy');

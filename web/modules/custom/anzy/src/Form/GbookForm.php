@@ -37,7 +37,7 @@ class GbookForm extends FormBase {
     $form['name'] = [
       '#title' => t("Your name:"),
       '#type' => 'textfield',
-      '#size' => 32,
+      '#size' => 100,
       '#description' => t("Name should be at least 2 characters and less than 32 characters"),
       '#required' => TRUE,
       '#ajax' => [
@@ -124,14 +124,23 @@ class GbookForm extends FormBase {
     if (strlen($form_state->getValue('name')) < 2) {
       $form_state->setErrorByName('name', t('The name is too short. Please enter valid name.'));
     }
-    elseif (strlen($form_state->getValue('name')) > 32) {
+    elseif (strlen($form_state->getValue('name')) > 100) {
       $form_state->setErrorByName('name', t('The name is too long. Please enter valid name.'));
-    }
-    elseif (!preg_match('/^[A-Za-z]*$/', $form_state->getValue('name'))) {
-      $form_state->setErrorByName('name', t('The name should contain only letters. Please enter valid name.'));
     }
     if (!filter_var($form_state->getValue('email'), FILTER_VALIDATE_EMAIL)) {
       $form_state->setErrorByName('email', t('Invalid email format. Please enter valid email.'));
+    }
+    elseif (preg_match('/[#$%^&*()+=!\[\]\';,\/{}|":<>?~\\\\0-9]/', $form_state->getValue('email'))) {
+      $form_state->setErrorByName('email', t('The email should match example. Please enter valid email.'));
+    }
+    if (strlen($form_state->getValue('phone')) < 9) {
+      $form_state->setErrorByName('phone', t('The phone number is too short. Please enter valid phone number.'));
+    }
+    elseif (strlen($form_state->getValue('phone')) > 15) {
+      $form_state->setErrorByName('phone', t('The phone number is too long. Please enter valid phone number.'));
+    }
+    elseif (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $form_state->getValue('email'))) {
+      $form_state->setErrorByName('phone', t('The phone number should contain only numbers. Please enter valid phone number.'));
     }
   }
 
@@ -140,12 +149,20 @@ class GbookForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $connection = \Drupal::service('database');
-    $file = File::load($form_state->getValue('image')[0]);
-    $file->setPermanent();
-    $file->save();
-    $ava = File::load($form_state->getValue('avatar')[0]);
-    $ava->setPermanent();
-    $ava->save();
+    if (!$form_state->getValue('image')[0] == NULL) {
+      $file = File::load($form_state->getValue('image')[0]);
+      $file->setPermanent();
+      $file->save();
+    } else {
+      $form_state->getValue('image')[0] = 0;
+    }
+    if (!$form_state->getValue('avatar')[0] == NULL) {
+      $ava = File::load($form_state->getValue('avatar')[0]);
+      $ava->setPermanent();
+      $ava->save();
+    } else {
+      $form_state->getValue('avatar')[0] = 66;
+    }
     $times = time() + 3 * 60 * 60;
     $result = $connection->insert('anzy')
       ->fields([
@@ -169,14 +186,23 @@ class GbookForm extends FormBase {
     if (strlen($form_state->getValue('name')) < 2) {
       $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('The name is too short. Please enter valid name.') . '</div>'));
     }
-    elseif (strlen($form_state->getValue('name')) > 32) {
+    elseif (strlen($form_state->getValue('name')) > 100) {
       $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('The name is too long. Please enter valid name.') . '</div>'));
     }
-    elseif (!preg_match('/^[A-Za-z]*$/', $form_state->getValue('name'))) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('The name should contain only letters. Please enter valid name.') . '</div>'));
+    elseif (preg_match('/[#$%^&*()+=!\[\]\';,\/{}|":<>?~\\\\0-9]/', $form_state->getValue('email'))) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('The email should match example. Please enter valid email.') . '</div>'));
     }
     elseif (!filter_var($form_state->getValue('email'), FILTER_VALIDATE_EMAIL)) {
       $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('Invalid email format. Please enter valid email.') . '</div>'));
+    }
+    elseif (strlen($form_state->getValue('phone')) < 2) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('The phone number is too short. Please enter valid phone number.') . '</div>'));
+    }
+    elseif (strlen($form_state->getValue('phone')) > 15) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('The phone number is too long. Please enter valid phone number.') . '</div>'));
+    }
+    elseif (!preg_match('/^[0-9\-\(\)\/\+\s]*$/', $form_state->getValue('phone'))) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' . t('The phone number should contain only number. Please enter valid phone number.') . '</div>'));
     }
     else {
       $response->addCommand(new HtmlCommand('#form-system-messages', ''));

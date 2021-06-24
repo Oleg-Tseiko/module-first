@@ -105,6 +105,7 @@ class GbookChangeForm extends FormBase {
         'file_validate_size' => [2097152],
       ],
       '#description' => t("insert image below size of 2MB. Supported formats: png jpg jpeg."),
+      '#default_value' => [66],
     ];
     $form['comment'] = [
       '#title' => t("Your review:"),
@@ -133,14 +134,23 @@ class GbookChangeForm extends FormBase {
     if (strlen($form_state->getValue('name')) < 2) {
       $form_state->setErrorByName('name', t('The name is too short. Please enter valid name.'));
     }
-    elseif (strlen($form_state->getValue('name')) > 32) {
+    elseif (strlen($form_state->getValue('name')) > 100) {
       $form_state->setErrorByName('name', t('The name is too long. Please enter valid name.'));
-    }
-    elseif (!preg_match('/^[A-Za-z]*$/', $form_state->getValue('name'))) {
-      $form_state->setErrorByName('name', t('The name should contain only letters. Please enter valid name.'));
     }
     if (!filter_var($form_state->getValue('email'), FILTER_VALIDATE_EMAIL)) {
       $form_state->setErrorByName('email', t('Invalid email format. Please enter valid email.'));
+    }
+    elseif (preg_match('/[#$%^&*()+=!\[\]\';,\/{}|":<>?~\\\\0-9]/', $form_state->getValue('email'))) {
+      $form_state->setErrorByName('email', t('The email should match example. Please enter valid email.'));
+    }
+    if (strlen($form_state->getValue('phone')) < 9) {
+      $form_state->setErrorByName('phone', t('The phone number is too short. Please enter valid phone number.'));
+    }
+    elseif (strlen($form_state->getValue('phone')) > 15) {
+      $form_state->setErrorByName('phone', t('The phone number is too long. Please enter valid phone number.'));
+    }
+    elseif (preg_match('/^[0-9\-\(\)\/\+\s]*$/', $form_state->getValue('email'))) {
+      $form_state->setErrorByName('phone', t('The phone number should contain only numbers. Please enter valid phone number.'));
     }
   }
 
@@ -150,19 +160,28 @@ class GbookChangeForm extends FormBase {
   public function validateAjax(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
     if (strlen($form_state->getValue('name')) < 2) {
-      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too short. Please enter valid name.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too short. Please enter valid name.') . '</div>'));
     }
-    elseif (strlen($form_state->getValue('name')) > 32) {
-      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too long. Please enter valid name.') . '</div>'));
+    elseif (strlen($form_state->getValue('name')) > 100) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too long. Please enter valid name.') . '</div>'));
     }
-    elseif (!preg_match('/^[A-Za-z]*$/', $form_state->getValue('name'))) {
-      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name should contain only letters. Please enter valid name.') . '</div>'));
+    elseif (preg_match('/[#$%^&*()+=!\[\]\';,\/{}|":<>?~\\\\0-9]/', $form_state->getValue('email'))) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The email should match example. Please enter valid email.') . '</div>'));
     }
     elseif (!filter_var($form_state->getValue('email'), FILTER_VALIDATE_EMAIL)) {
-      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('Invalid email format. Please enter valid email.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('Invalid email format. Please enter valid email.') . '</div>'));
+    }
+    elseif (strlen($form_state->getValue('phone')) < 2) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number is too short. Please enter valid phone number.') . '</div>'));
+    }
+    elseif (strlen($form_state->getValue('phone')) > 15) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number is too long. Please enter valid phone number.') . '</div>'));
+    }
+    elseif (!preg_match('/^[0-9\-\(\)\/\+\s]*$/', $form_state->getValue('phone'))) {
+      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number should contain only number. Please enter valid phone number.') . '</div>'));
     }
     else {
-      $response->addCommand(new HtmlCommand('#message-error', ''));
+      $response->addCommand(new HtmlCommand('#form-system-messages', ''));
     }
     return $response;
   }

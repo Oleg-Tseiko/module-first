@@ -16,12 +16,14 @@
       <p><span>{{ 'Submitted:'|trans }} </span>{{ item.created }}</p>
       <p><span>{{ 'Review:'|trans }} </span>{{ item.comment }}</p>
       {% if user.hasPermission('administer nodes') %}
-        <a href="/anzy/gbookDel/{{ item.id }}" class="deleteGbook use-ajax" data-dialog-type="modal">{{ 'Delete'|trans }}</a>
+        <a href="/admin/anzy/gbookDel/{{ item.id }}" class="deleteGbook use-ajax" data-dialog-type="modal">{{ 'Delete'|trans }}</a>
         <a href="/admin/anzy/gbookChange/{{ item.id }}" class="deleteGbook">{{ 'Edit'|trans }}</a>
       {% endif %}
     </div>
+    {% if item.image  %}
     <div class="col-md-6">
       <div class="image-container"><a href="{{ item.image }}" target="_blank"><img src="{{ item.image }}" alt="user image"></a></div>
     </div>
+    {% endif %}
   </div>
 {% endfor %}

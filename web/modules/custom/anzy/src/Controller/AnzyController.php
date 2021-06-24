@@ -44,7 +44,9 @@ class AnzyController extends ControllerBase {
   public function load() {
     $connection = \Drupal::service('database');
     $query = $connection->select('anzy', 'a');
-    $query->fields('a', ['name', 'comment', 'phone', 'mail', 'created', 'image', 'avatar', 'id']);
+    $query->fields('a',
+      ['name', 'comment', 'phone', 'mail', 'created', 'image', 'avatar', 'id']
+    );
     $result = $query->execute()->fetchAll();
     return $result;
   }
@@ -60,7 +62,7 @@ class AnzyController extends ControllerBase {
     foreach ($info as &$value) {
       $fid = $value['image'];
       $file = File::load($fid);
-      $value['image'] = file_url_transform_relative(file_create_url($file->getFileUri()));
+      $value['image'] = !empty($file) ? file_url_transform_relative(file_create_url($file->getFileUri())) : '';
       $avafid = $value['avatar'];
       $avafile = File::load($avafid);
       $value['avatar'] = file_url_transform_relative(file_create_url($avafile->getFileUri()));
