@@ -1,12 +1,21 @@
 .gbook-form .alert-danger {
   padding: 20px;
 }
+.underline_gbook p {
+  overflow: hidden;
+}
 .gbook-form .list-group-item {
   background-color: #ff4444;
 }
 .gbook-form input {
   padding: 1.5625rem 0.625rem;
   border-radius: 0;
+}
+.gbook-form .form-file {
+  padding: 0px;
+  border-radius: 0;
+  width: 250px;
+  border: none;
 }
 .gbook-form button {
   margin-top: 1.25rem;
@@ -15,6 +24,9 @@
   text-transform: uppercase;
   background-color: #ff3232;
   border: none;
+}
+.gbook-form button:hover, .deleteGbook:hover {
+  background-color: tan;
 }
 .gbook-form .form-required {
   margin-top: 10px;
@@ -37,6 +49,9 @@
   margin: 10px 0;
   border-radius: 5px;
 }
+#block-exam-content h4 {
+  margin-bottom: 30px;
+}
 .underline_gbook {
   margin-bottom: 20px;
   padding-bottom: 20px;
@@ -50,9 +65,11 @@
    border-top: 1px solid #999;
    padding-top: 10px;
 }
-.avatar-book {
+.avatar-book img {
   border-radius: 50%;
   margin: 10px;
+  height: auto;
+  width: 80%;
 }
 .deleteGbook {
   background-color: #ff3232;
@@ -69,7 +86,6 @@
 }
 .deleteGbook:hover {
    color: #FFF;
-   background-color: #00619a;
    text-decoration: none;
 }
 .ui-widget {
@@ -106,18 +122,6 @@
   border:none;
   outline: none;
   box-shadow: none;
-}
-
-.cat-change-form {
-  display: inline-block;
-}
-.cat-change-form button {
-  background-color: #ff3232;
-  width: 90px;
-  text-transform: uppercase;
-  padding: 10px 1.25rem;
-  border: none;
-  font-size: 14px;
 }
 .ui-dialog-titlebar-close {
   border: none;

@@ -149,6 +149,7 @@ class AnzyAdminForm extends FormBase {
       '#value' => $this->t('Delete all'),
       '#description' => $this->t('Submit, #type = submit'),
     ];
+    $form['#attached']['library'][] = 'anzy/my-admin-lib';
     return $form;
   }
 

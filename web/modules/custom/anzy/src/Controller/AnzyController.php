@@ -68,6 +68,7 @@ class AnzyController extends ControllerBase {
       $value['avatar'] = file_url_transform_relative(file_create_url($avafile->getFileUri()));
       array_push($rows, $value);
     }
+    $form['#attached']['library'][] = 'anzy/my-lib';
     return [
       '#theme' => 'Gbook_template',
       '#items' => $rows,

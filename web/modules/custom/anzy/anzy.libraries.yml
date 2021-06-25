@@ -1,5 +1,11 @@
-anzy.gbook_page:
+my-lib:
   version: 1.x
   css:
     theme:
       css/book-page.css: {}
+
+my-admin-lib:
+  version: 1.x
+  css:
+    theme:
+      css/admin-book-page.css: {}
