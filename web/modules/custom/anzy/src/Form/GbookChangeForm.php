@@ -28,6 +28,13 @@ class GbookChangeForm extends FormBase {
   protected $ctid = 0;
 
   /**
+   * Contain slug number to redirect review entry.
+   *
+   * @var rpathh
+   */
+  protected $rpathh = 0;
+
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -37,7 +44,7 @@ class GbookChangeForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $cid = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $cid = NULL, $rpath = NULL) {
     $form['system_messages'] = [
       '#markup' => '<div id="message-error" class="messages messages--error"></div>',
       '#weight' => -100,
@@ -124,6 +131,7 @@ class GbookChangeForm extends FormBase {
       ],
     ];
     $this->ctid = $cid;
+    $this->rpathh = $rpath;
     return $form;
   }
 
@@ -160,28 +168,28 @@ class GbookChangeForm extends FormBase {
   public function validateAjax(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
     if (strlen($form_state->getValue('name')) < 2) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too short. Please enter valid name.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too short. Please enter valid name.') . '</div>'));
     }
     elseif (strlen($form_state->getValue('name')) > 100) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too long. Please enter valid name.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The name is too long. Please enter valid name.') . '</div>'));
     }
     elseif (preg_match('/[#$%^&*()+=!\[\]\';,\/{}|":<>?~\\\\0-9]/', $form_state->getValue('email'))) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The email should match example. Please enter valid email.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The email should match example. Please enter valid email.') . '</div>'));
     }
     elseif (!filter_var($form_state->getValue('email'), FILTER_VALIDATE_EMAIL)) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('Invalid email format. Please enter valid email.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('Invalid email format. Please enter valid email.') . '</div>'));
     }
     elseif (strlen($form_state->getValue('phone')) < 2) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number is too short. Please enter valid phone number.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number is too short. Please enter valid phone number.') . '</div>'));
     }
     elseif (strlen($form_state->getValue('phone')) > 15) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number is too long. Please enter valid phone number.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number is too long. Please enter valid phone number.') . '</div>'));
     }
     elseif (!preg_match('/^[0-9\-\(\)\/\+\s]*$/', $form_state->getValue('phone'))) {
-      $response->addCommand(new HtmlCommand('#form-system-messages', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number should contain only number. Please enter valid phone number.') . '</div>'));
+      $response->addCommand(new HtmlCommand('#message-error', '<div class="alert alert-dismissible fade show col-12 alert-danger">' . t('The phone number should contain only number. Please enter valid phone number.') . '</div>'));
     }
     else {
-      $response->addCommand(new HtmlCommand('#form-system-messages', ''));
+      $response->addCommand(new HtmlCommand('#message-error', ''));
     }
     return $response;
   }
@@ -215,8 +223,14 @@ class GbookChangeForm extends FormBase {
    * Function to reload page.
    */
   public function ajaxForm(array &$form, FormStateInterface $form_state) {
-    $response = new AjaxResponse();
-    $response->addCommand(new RedirectCommand('/anzy/gbook'));
+    if ($this->rpathh == 10) {
+      $response = new AjaxResponse();
+      $response->addCommand(new RedirectCommand('/anzy/gbook'));
+    }
+    elseif ($this->rpathh == 20) {
+      $response = new AjaxResponse();
+      $response->addCommand(new RedirectCommand('/admin/structure/gbook-comments'));
+    }
     return $response;
   }
 

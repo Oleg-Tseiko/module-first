@@ -6,24 +6,29 @@
     <div class="col-md-6">
       <div class="row">
         <div class="col-sm-6">
-          <a href="{{ item.avatar }}" target="_blank"><img src="{{ item.avatar }}" alt="user profile image"></a></div>
+          <a href="{{ item.avatar }}" target="_blank" class="avatar-book"><img src="{{ item.avatar }}" alt="user profile image"></a></div>
         <div class="col-sm-6">
           <p>{{ item.name }}</p>
-          <p>{{ item.mail }}</p>
-          <p>{{ item.phone }}</p>
+          <p><span>{{ 'Submitted:'|trans }} </span>{{ item.created }}</p>
         </div>
       </div>
-      <p><span>{{ 'Submitted:'|trans }} </span>{{ item.created }}</p>
-      <p><span>{{ 'Review:'|trans }} </span>{{ item.comment }}</p>
-      {% if user.hasPermission('administer nodes') %}
-        <a href="/admin/anzy/gbookDel/{{ item.id }}" class="deleteGbook use-ajax" data-dialog-type="modal">{{ 'Delete'|trans }}</a>
-        <a href="/admin/anzy/gbookChange/{{ item.id }}" class="deleteGbook">{{ 'Edit'|trans }}</a>
+    </div>
+    <div class="col-md-6">
+      <p><span>{{ 'Contact:'|trans }}</span></p>
+      <p>{{ item.mail }}</p>
+      <p>{{ item.phone }}</p>
+    </div>
+    <div class="col-md-6">
+      {% if item.image  %}
+      <div class="image-container"><a href="{{ item.image }}" target="_blank"><img src="{{ item.image }}" alt="user image"></a></div>
       {% endif %}
     </div>
-    {% if item.image  %}
     <div class="col-md-6">
-      <div class="image-container"><a href="{{ item.image }}" target="_blank"><img src="{{ item.image }}" alt="user image"></a></div>
+      <p>{{ item.comment }}</p>
+      {% if user.hasPermission('administer nodes') %}
+        <a href="/admin/anzy/gbookDel/{{ item.id }}/10" class="deleteGbook use-ajax" data-dialog-type="modal">{{ 'Delete'|trans }}</a>
+        <a href="/admin/anzy/gbookChange/{{ item.id }}/10" class="deleteGbook">{{ 'Edit'|trans }}</a>
+      {% endif %}
     </div>
-    {% endif %}
   </div>
 {% endfor %}

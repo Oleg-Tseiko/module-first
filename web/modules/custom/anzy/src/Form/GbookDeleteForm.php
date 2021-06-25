@@ -25,6 +25,13 @@ class GbookDeleteForm extends FormBase {
   protected $ctid = 0;
 
   /**
+   * Contain slug number to redirect review entry.
+   *
+   * @var rpathh
+   */
+  protected $rpathh = 0;
+
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -34,7 +41,7 @@ class GbookDeleteForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $cid = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $cid = NULL, $rpath = NULL) {
     $form['delete'] = [
       '#type' => 'submit',
       '#value' => t('Delete'),
@@ -47,6 +54,7 @@ class GbookDeleteForm extends FormBase {
       ],
     ];
     $this->ctid = $cid;
+    $this->rpathh = $rpath;
     return $form;
   }
 
@@ -65,8 +73,14 @@ class GbookDeleteForm extends FormBase {
    * Function to reload page.
    */
   public function ajaxForm(array &$form, FormStateInterface $form_state) {
-    $response = new AjaxResponse();
-    $response->addCommand(new RedirectCommand('/anzy/gbook'));
+    if ($this->rpathh == 10) {
+      $response = new AjaxResponse();
+      $response->addCommand(new RedirectCommand('/anzy/gbook'));
+    }
+    elseif ($this->rpathh == 20) {
+      $response = new AjaxResponse();
+      $response->addCommand(new RedirectCommand('/admin/structure/gbook-comments'));
+    }
     return $response;
   }
 
